@@ -30,11 +30,11 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 import org.apache.commons.beanutils.expression.DefaultResolver;
 import org.apache.commons.beanutils.expression.Resolver;
-import org.apache.commons.collections.FastHashMap;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -114,7 +114,7 @@ public class PropertyUtilsBean {
      * introspected, keyed by the java.lang.Class of this object.
      */
     private WeakFastHashMap<Class<?>, BeanIntrospectionData> descriptorsCache = null;
-    private WeakFastHashMap<Class<?>, FastHashMap> mappedDescriptorsCache = null;
+    private WeakFastHashMap<Class<?>, ConcurrentHashMap> mappedDescriptorsCache = null;
 
     /** An empty object array */
     private static final Object[] EMPTY_OBJECT_ARRAY = new Object[0];
@@ -131,7 +131,7 @@ public class PropertyUtilsBean {
     public PropertyUtilsBean() {
         descriptorsCache = new WeakFastHashMap<Class<?>, BeanIntrospectionData>();
         descriptorsCache.setFast(true);
-        mappedDescriptorsCache = new WeakFastHashMap<Class<?>, FastHashMap>();
+        mappedDescriptorsCache = new WeakFastHashMap<>();
         mappedDescriptorsCache.setFast(true);
         introspectors = new CopyOnWriteArrayList<BeanIntrospector>();
         resetBeanIntrospectors();
@@ -714,12 +714,11 @@ public class PropertyUtilsBean {
      * @deprecated This method should not be exposed
      */
     @Deprecated
-    public FastHashMap getMappedPropertyDescriptors(final Class<?> beanClass) {
+    public ConcurrentHashMap getMappedPropertyDescriptors(final Class<?> beanClass) {
 
-        if (beanClass == null) {
+      if (beanClass == null) {
             return null;
         }
-
         // Look up any cached descriptors for this bean class
         return mappedDescriptorsCache.get(beanClass);
 
@@ -736,9 +735,9 @@ public class PropertyUtilsBean {
      * @deprecated This method should not be exposed
      */
     @Deprecated
-    public FastHashMap getMappedPropertyDescriptors(final Object bean) {
+    public ConcurrentHashMap getMappedPropertyDescriptors(final Object bean) {
 
-        if (bean == null) {
+      if (bean == null) {
             return null;
         }
         return (getMappedPropertyDescriptors(bean.getClass()));
@@ -958,11 +957,10 @@ public class PropertyUtilsBean {
             return result;
         }
 
-        FastHashMap mappedDescriptors =
+        ConcurrentHashMap mappedDescriptors =
                 getMappedPropertyDescriptors(bean);
         if (mappedDescriptors == null) {
-            mappedDescriptors = new FastHashMap();
-            mappedDescriptors.setFast(true);
+            mappedDescriptors = new ConcurrentHashMap<>();
             mappedDescriptorsCache.put(bean.getClass(), mappedDescriptors);
         }
         result = (PropertyDescriptor) mappedDescriptors.get(name);

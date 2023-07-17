@@ -38,7 +38,6 @@ import org.apache.commons.beanutils.locale.converters.SqlDateLocaleConverter;
 import org.apache.commons.beanutils.locale.converters.SqlTimeLocaleConverter;
 import org.apache.commons.beanutils.locale.converters.SqlTimestampLocaleConverter;
 import org.apache.commons.beanutils.locale.converters.StringLocaleConverter;
-import org.apache.commons.collections.FastHashMap;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -108,7 +107,7 @@ public class LocaleConvertUtilsBean {
      *  key = locale
      *  value = FastHashMap of converters for the certain locale.
      */
-    private final FastHashMap mapConverters = new DelegateFastHashMap(BeanUtils.createCache());
+    private final Map<Object, Object> mapConverters = new DelegateFastHashMap(BeanUtils.createCache());
 
     // --------------------------------------------------------- Constructors
 
@@ -117,9 +116,9 @@ public class LocaleConvertUtilsBean {
      *  and then registers default locale converters.
      */
     public LocaleConvertUtilsBean() {
-        mapConverters.setFast(false);
+        // mapConverters.setFast(false);
         deregister();
-        mapConverters.setFast(true);
+        // mapConverters.setFast(true);
     }
 
     // --------------------------------------------------------- Properties
@@ -371,14 +370,14 @@ public class LocaleConvertUtilsBean {
      */
     public void deregister() {
 
-        final FastHashMap defaultConverter = lookup(defaultLocale);
+        final Map defaultConverter = lookup(defaultLocale);
 
-        mapConverters.setFast(false);
+       //  mapConverters.setFast(false);
 
         mapConverters.clear();
         mapConverters.put(defaultLocale, defaultConverter);
 
-        mapConverters.setFast(true);
+       // mapConverters.setFast(true);
     }
 
 
@@ -434,14 +433,14 @@ public class LocaleConvertUtilsBean {
      * @deprecated This method will be modified to return a Map in the next release.
      */
     @Deprecated
-    protected FastHashMap lookup(final Locale locale) {
-        FastHashMap localeConverters;
+    protected Map lookup(final Locale locale) {
+      Map localeConverters;
 
         if (locale == null) {
-            localeConverters = (FastHashMap) mapConverters.get(defaultLocale);
+            localeConverters = (Map) mapConverters.get(defaultLocale);
         }
         else {
-            localeConverters = (FastHashMap) mapConverters.get(locale);
+            localeConverters = (Map) mapConverters.get(locale);
 
             if (localeConverters == null) {
                 localeConverters = create(locale);
@@ -461,10 +460,10 @@ public class LocaleConvertUtilsBean {
      * @deprecated This method will be modified to return a Map in the next release.
      */
     @Deprecated
-    protected FastHashMap create(final Locale locale) {
+    protected Map create(final Locale locale) {
 
-        final FastHashMap converter = new DelegateFastHashMap(BeanUtils.createCache());
-        converter.setFast(false);
+        final Map converter = new DelegateFastHashMap(BeanUtils.createCache());
+        // converter.setFast(false);
 
         converter.put(BigDecimal.class, new BigDecimalLocaleConverter(locale, applyLocalized));
         converter.put(BigInteger.class, new BigIntegerLocaleConverter(locale, applyLocalized));
@@ -497,7 +496,7 @@ public class LocaleConvertUtilsBean {
                        new SqlTimestampLocaleConverter(locale, "yyyy-MM-dd HH:mm:ss.S")
                      );
 
-        converter.setFast(true);
+       //  converter.setFast(true);
 
         return converter;
     }
@@ -510,7 +509,7 @@ public class LocaleConvertUtilsBean {
      * releases (where FastHashMap is exposed in the API), but
      * use WeakHashMap to resolve memory leaks.
      */
-    private static class DelegateFastHashMap extends FastHashMap {
+    private static class DelegateFastHashMap implements Map {
 
         private final Map<Object, Object> map;
 
@@ -576,13 +575,11 @@ public class LocaleConvertUtilsBean {
         public Collection<Object> values() {
             return map.values();
         }
-        @Override
         public boolean getFast() {
-            return BeanUtils.getCacheFast(map);
+           return true;
         }
-        @Override
         public void setFast(final boolean fast) {
-            BeanUtils.setCacheFast(map, fast);
+          // BeanUtils.setCacheFast(map, fast);
         }
     }
 }

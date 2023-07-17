@@ -33,8 +33,8 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
-import org.apache.commons.collections.Transformer;
-import org.apache.commons.collections.keyvalue.AbstractMapEntry;
+import org.apache.commons.collections4.Transformer;
+import org.apache.commons.collections4.keyvalue.AbstractMapEntry;
 
 /**
  * An implementation of Map for JavaBeans which uses introspection to
@@ -49,9 +49,9 @@ public class BeanMap extends AbstractMap<Object, Object> implements Cloneable {
 
     private transient Object bean;
 
-    private transient HashMap<String, Method> readMethods = new HashMap<String, Method>();
-    private transient HashMap<String, Method> writeMethods = new HashMap<String, Method>();
-    private transient HashMap<String, Class<? extends Object>> types = new HashMap<String, Class<? extends Object>>();
+    private transient HashMap<String, Method> readMethods = new HashMap<>();
+    private transient HashMap<String, Method> writeMethods = new HashMap<>();
+    private transient HashMap<String, Class<? extends Object>> types = new HashMap<>();
 
     /**
      * An empty array.  Used to invoke accessors via reflection.

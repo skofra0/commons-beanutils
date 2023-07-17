@@ -18,8 +18,8 @@
 package org.apache.commons.beanutils.locale;
 
 import java.util.Locale;
+import java.util.Map;
 
-import org.apache.commons.collections.FastHashMap;
 
 /**
  * <p>Utility methods for converting locale-sensitive String scalar values to objects of the
@@ -311,7 +311,6 @@ public class LocaleConvertUtils {
      * @see LocaleConvertUtilsBean#lookup(Class, Locale)
      */
     public static LocaleConverter lookup(final Class<?> clazz, final Locale locale) {
-
         return LocaleConvertUtilsBean.getInstance().lookup(clazz, locale);
     }
 
@@ -327,7 +326,7 @@ public class LocaleConvertUtils {
      * @deprecated This method will be modified to return a Map in the next release.
      */
     @Deprecated
-    protected static FastHashMap lookup(final Locale locale) {
+    protected static Map lookup(final Locale locale) {
         return LocaleConvertUtilsBean.getInstance().lookup(locale);
     }
 
@@ -343,7 +342,7 @@ public class LocaleConvertUtils {
      * @deprecated This method will be modified to return a Map in the next release.
      */
     @Deprecated
-    protected static FastHashMap create(final Locale locale) {
+    protected static Map create(final Locale locale) {
 
         return LocaleConvertUtilsBean.getInstance().create(locale);
     }
